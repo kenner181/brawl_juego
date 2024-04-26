@@ -1,0 +1,230 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+body{
+    background-image: url(../img/fondoazul.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: initial;
+    background-attachment: fixed;
+    font-family: 'Lilita One', cursive;
+}
+
+.contenedor{
+    width: 960px;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* ********************************** */
+/*               HEADER               */
+/* ********************************** */
+
+header{
+    height: 150px;
+    display: flex;
+    gap: 54%;
+    flex-wrap: wrap;
+}
+
+header h1{
+    font-size: 50px;
+    text-align: center;
+    line-height: 150px;
+}
+
+/*************************** Perfil Jugador ***************************/
+
+.perfil{
+    border: 3px solid rgb(0, 0, 0);
+    display: flex;
+    flex-direction: row; 
+    color: #ffad00;
+    background-color: #222;
+    border-radius: 10px;
+    margin-left: 10px;
+    margin-top: 15px;
+    height: 120px;
+}
+
+.perfil span{
+    color: white;
+}
+
+.img_per{
+    width: 100px;
+    height: 100px;
+    padding: 10px;
+    margin-bottom: -5px;
+}
+
+.avatar p{
+    margin-left: 20px;
+    margin-top: -3px;
+}
+
+.info {
+    margin: 20px;
+}
+
+/*************************** Rango Jugador ***************************/
+
+.rango{
+    border: 3px solid rgb(0, 0, 0); 
+    color: #ffad00;
+    background-color: #222;
+    text-align: center;
+    align-items: center;
+    border-radius: 10px;
+    margin-left: -8px;
+    margin-top: 15px;
+    width: 180px;
+    height: 120px;
+}
+
+.rango h4{
+    margin-top: 5px;
+}
+
+.liga{
+    margin-top: -2px;
+}
+
+.img_ran{
+    width: 70px;
+    height: 70px;
+}
+
+/* ********************************** */
+/*               CONTENIDO            */
+/* ********************************** */
+
+.contenido{
+    width: 700px;
+    height: 500px;
+    float: left;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.content-wrapper {
+    text-align: center;
+    margin-top: -10px;
+}
+
+/*************************** Imagen ***************************/
+
+.image-container {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    max-height: 300px; 
+    text-align: center;
+}
+
+.imagen-dinamica {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto; 
+    height: auto; 
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/*************************** Boton ***************************/
+
+.button-container {
+    position: absolute;
+    bottom: -80%;
+    left: 53%;
+    transform: translate( -50%);
+}
+
+
+.btn-primary {
+    text-shadow: 0px 2px 10px black;
+    padding: 12px 50px;
+    margin-bottom: 40px;
+    background-color: rgb(235, 206, 43);
+    border-color: rgb(235, 207, 51);
+    transform: skew(-20deg);
+}
+
+.btn-primary a {
+    color: inherit; 
+    text-decoration: none; 
+}
+
+.btn-primary:hover {
+    background-color: rgb(206, 181, 43);
+    border-color: rgb(206, 181, 43);
+}
+
+/* ********************************** */
+/*            BARRA LATERAL           */
+/* ********************************** */
+
+aside{
+    width: 250px;
+    height: 500px;
+    margin-top: 10px;
+    float: right;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.menu{
+    border: 3px solid rgb(0, 0, 0);
+    display: flex;
+    flex-direction: column;
+    background-color: #222;
+    width: 180px;
+    height: 480px;
+    margin-top: 10px;
+    margin-left: 40px;
+    border-radius: 10px
+}
+
+aside h4{
+    text-align: center;
+    line-height: 80px;
+    border-radius: 10px;
+    color: #ffad00;
+} 
+
+.menu img {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 5px;
+    margin-top: 3px; 
+}
+
+.menu a {
+    color: #2aa2f3;
+    align-items: center;
+    text-decoration: none;
+}
+
+
+.menu ul {
+    list-style-type: none; 
+    padding: 0; 
+    margin: 0; 
+}
+
+.menu li {
+    margin-bottom: 40px;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; 
+}
+
+.menu li:hover {
+    background-color: rgba(70, 68, 68, 0.2); 
+    border-radius: 5px; 
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.3); 
+    transform: scale(1.001); 
+    margin-left: 15px;
+    margin-right: 15px;
+}

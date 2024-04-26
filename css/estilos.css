@@ -1,0 +1,54 @@
+body{
+    background-image: url(../img/fondoindex.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: initial;
+    background-attachment: fixed;
+    font-family: 'Lilita One', cursive;
+}
+
+.container{
+   padding: 20px;
+   text-align: center;
+}
+
+.img{
+    width: 400px;
+    animation: zoom 2s infinite alternate; 
+}
+
+@keyframes zoom {
+    0% {
+        transform: scale(1); 
+    }
+    100% {
+        transform: scale(1.1); 
+    }
+}
+
+.btn-primary, .btn-secondary {
+    text-shadow: 0px 2px 10px black;
+    padding: 10px 30px;
+    margin-bottom: 40px;
+}
+
+.btn-secondary{
+    background-color: rgb(235, 207, 51);
+    border-color: rgb(235, 207, 51);
+}
+
+.btn-secondary:hover {
+    background-color: rgb(206, 181, 43);
+    border-color: rgb(206, 181, 43);
+}
+
+.btn-primary a,
+.btn-secondary a {
+    color: inherit; 
+    text-decoration: none; 
+}
+
+.diagonal {
+    transform: skew(-20deg);
+}
+
