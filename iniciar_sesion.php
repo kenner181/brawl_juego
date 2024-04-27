@@ -22,7 +22,7 @@
                 <input type="password" name="contrasena" id="contrasena">
                 <label>Contraseña</label>
             </div>
-            <div class="recordar"><a href="#">Olvido su contraseña?</a></div>
+            <div class="recordar"><a href="recupera.php">Olvido su contraseña?</a></div>
             <input type="submit" name="inicio" value="Iniciar Sesión">
             <br><br>
         </form>

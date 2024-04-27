@@ -1,5 +1,10 @@
 <?php
 session_start();
+if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
+    
+    header("Location: ../../iniciar_sesion.php");
+    exit; 
+}
 require_once("../../conexion/conexion.php");
 $db = new Database();
 $con = $db->getConnection();
@@ -8,40 +13,39 @@ $query = $con->prepare("SELECT avatar.nombre,avatar.foto FROM avatar");
 $query->execute();
 $resultados = $query->fetchAll(PDO::FETCH_ASSOC);
 
-if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")){
+if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
 
     $nombre = $_POST['nombre'];
 
-    $foto = $_FILES['foto']['name']; 
+    $foto = $_FILES['foto']['name'];
     $foto_temp = $_FILES['foto']['tmp_name'];
     $foto_destino = "../../img_bd/" . $foto;
 
-    $foto_personaje = $_FILES['personaje']['name']; 
+    $foto_personaje = $_FILES['personaje']['name'];
     $foto_temp_personaje = $_FILES['personaje']['tmp_name'];
     $foto_destino_personaje = "../../img_bd/" . $foto_personaje;
-    
+
 
     move_uploaded_file($foto_temp, $foto_destino);
     move_uploaded_file($foto_temp_personaje, $foto_destino_personaje);
 
     $sql = $con->prepare("SELECT * FROM avatar where nombre='$nombre'");
-	$sql->execute();
-	$fila = $sql->fetchAll(PDO::FETCH_ASSOC);
+    $sql->execute();
+    $fila = $sql->fetchAll(PDO::FETCH_ASSOC);
 
-    if ($nombre == "" || $foto_destino == ""|| $foto_destino_personaje == "") {
-		echo '<script>alert ("Datos Vacios"); </script>';
-		echo '<script>window.location="avatar.php"</script>';
-	} else if ($fila) {
-		echo '<script>alert ("AVATAR YA REGISTRADO"); </script>';
-		echo '<script>window.location="avatar.php"</script>';
-	} else {
-		
-		$insertSQL = $con->prepare("INSERT INTO avatar (nombre,foto,personaje) 
+    if ($nombre == "" || $foto_destino == "" || $foto_destino_personaje == "") {
+        echo '<script>alert ("Datos Vacios"); </script>';
+        echo '<script>window.location="avatar.php"</script>';
+    } else if ($fila) {
+        echo '<script>alert ("AVATAR YA REGISTRADO"); </script>';
+        echo '<script>window.location="avatar.php"</script>';
+    } else {
+
+        $insertSQL = $con->prepare("INSERT INTO avatar (nombre,foto,personaje) 
 	    VALUES ('$nombre','$foto_destino', '$foto_destino_personaje')");
-		$insertSQL->execute();
-		echo '<script>window.location="avatar.php"</script>';
-	}
-
+        $insertSQL->execute();
+        echo '<script>window.location="avatar.php"</script>';
+    }
 };
 
 ?>
@@ -75,11 +79,11 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")){
             </div>
             <div class="mb-3">
                 <label for="foto" class="form-label">Imagen</label>
-                <input type="file" class="form-control" name="foto" >
+                <input type="file" class="form-control" name="foto">
             </div>
             <div class="mb-3">
                 <label for="personaje" class="form-label">Personaje</label>
-                <input type="file" class="form-control" name="personaje" >
+                <input type="file" class="form-control" name="personaje">
             </div>
             <input type="submit" class="btn btn-primary" name="validar" value="Registrarse">
             <input type="hidden" name="MM_insert" value="formreg">
@@ -88,7 +92,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")){
             <table class="table">
                 <thead class="bg-info">
                     <tr>
-                        <th scope="col">Nombre</th>                       
+                        <th scope="col">Nombre</th>
                         <th scope="col">Foto</th>
                         <th scope="col">Personaje</th>
                         <th scope="col">Acciones</th>
@@ -99,10 +103,10 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")){
                         <tr>
                             <td><?php echo $fila['nombre']; ?></td>
                             <td>
-                                <img src="<?php echo $fila['foto']; ?>"  style="max-width: 100px;">
+                                <img src="<?php echo $fila['foto']; ?>" style="max-width: 100px;">
                             </td>
                             <td>
-                                <img src="<?php echo $fila['personaje']; ?>"  style="max-width: 100px;">
+                                <img src="<?php echo $fila['personaje']; ?>" style="max-width: 100px;">
                             </td>
                             <td>
                                 <a href="" class="btn btn-small btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>

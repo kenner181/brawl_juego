@@ -1,3 +1,4 @@
+
 <nav class="navbar navbar-expand-lg bg-light">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">Brawl Stars</a>
@@ -15,6 +16,7 @@
         <a class="nav-link" href="armas.php">Armas</a>
         <a class="nav-link" href="estado.php">Estados</a>
         <a class="nav-link" href="roles.php">Roles</a>
+        <a class="nav-link" href="../../controller/logout.php">Cerrar sesiòn</a>
       </div>
     </div>
   </div>

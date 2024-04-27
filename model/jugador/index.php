@@ -1,9 +1,19 @@
 <?php
 session_start();
+if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
+    
+    header("Location: ../../iniciar_sesion.php");
+    exit; 
+}
 require_once("../../conexion/conexion.php");
 $db = new Database();
 $con = $db->getConnection();
 
+$query = "SELECT * FROM usuarios WHERE id_avatar = :username";
+$stmt = $con->prepare($query);
+$stmt->bindParam(':username', $username);
+$stmt->execute();
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>

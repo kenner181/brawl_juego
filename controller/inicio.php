@@ -44,7 +44,7 @@ try {
                             header("Location: ../model/admin/index.php");
                             exit();
                         case 2:
-                            header("Location: index2.php");
+                            header("Location: ../model/jugador/index.php");
                             exit();
                         case 3:
                             header("Location: index3.php");

@@ -1,17 +1,20 @@
 <?php
+
+
+session_start();
+if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
+    
+    header("Location: ../../iniciar_sesion.php");
+    exit; 
+}
+require_once("../../conexion/conexion.php");
+$db = new Database();
+$con = $db->getConnection();
+
+
 // Verificar si se enviaron los datos del formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id_mundo'])) {
-    // Conexión a la base de datos
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $database = "brawl_stars";
-
-    $conn = new mysqli($servername, $username, $password, $database);
-
-    if ($conn->connect_error) {
-        die("Conexión fallida: " . $conn->connect_error);
-    }
+   
 
     // Obtener el id_mundo y el id del jugador activo
     $id_mundo = $_POST['id_mundo'];
@@ -31,8 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id_mundo'])) {
         echo "Error al unirse al mundo: " . $conn->error;
     }
 
-    // Cerrar la conexión
-    $conn->close();
+
 } else {
     echo "ID de mundo no proporcionado.";
 }

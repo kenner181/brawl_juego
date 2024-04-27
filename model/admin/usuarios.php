@@ -1,8 +1,13 @@
 <?php
+session_start();
+if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
+    
+    header("Location: ../../iniciar_sesion.php");
+    exit; 
+}
 require_once("../../conexion/conexion.php");
-$database = new Database();
 $db = new Database();
-$con = $database->getConnection();
+$con = $db->getConnection();
 
 if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
 	$username = $_POST['usuario'];

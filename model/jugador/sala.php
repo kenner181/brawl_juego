@@ -1,3 +1,17 @@
+<?php
+session_start();
+if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
+    
+    header("Location: ../../iniciar_sesion.php");
+    exit; 
+}
+require_once("../../conexion/conexion.php");
+$db = new Database();
+$con = $db->getConnection();
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,17 +46,6 @@
         <div class="swiper-wrapper">
             <div class="swiper-slide">
                 <?php
-                // Conexión a la base de datos
-                $servername = "localhost";
-                $username = "root";
-                $password = "";
-                $database = "brawl_stars";
-
-                $conn = new mysqli($servername, $username, $password, $database);
-
-                if ($conn->connect_error) {
-                    die("Conexión fallida: " . $conn->connect_error);
-                }
 
                 // Obtener el ID del mundo desde el formulario
                 $id_mundo = $_POST['id_mundo'] ?? null;
@@ -71,8 +74,6 @@
                     echo "ID del mundo no recibido.";
                 }
 
-                // Cerrar la conexión
-                $conn->close();
                 ?>
             </div>
         </div>
@@ -81,18 +82,6 @@
     <div class="container">
         <div class="box-container">
             <?php
-            // Conexión a la base de datos
-            $servername = "localhost";
-            $username = "root";
-            $password = "";
-            $database = "brawl_stars";
-
-            $conn = new mysqli($servername, $username, $password, $database);
-
-            if ($conn->connect_error) {
-                die("Conexión fallida: " . $conn->connect_error);
-            }
-
             // Obtener el ID del mundo desde el formulario
             $id_mundo = $_POST['id_mundo'] ?? null;
 
@@ -134,8 +123,6 @@
                 echo "ID del mundo no recibido.";
             }
 
-            // Cerrar la conexión
-            $conn->close();
             ?>
         </div>
     </div>
@@ -148,13 +135,6 @@
                 <select name="id_arma">
                     <option value="">Seleccione Arma</option>
                     <?php
-                    // Conexión a la base de datos
-                    $conn = new mysqli($servername, $username, $password, $database);
-
-                    if ($conn->connect_error) {
-                        die("Conexión fallida: " . $conn->connect_error);
-                    }
-
                     // Consulta SQL para obtener las armas
                     $sql_armas = "SELECT id_arma, nombre_arma FROM armas";
                     $result_armas = $conn->query($sql_armas);
@@ -168,8 +148,6 @@
                         echo "No se encontraron armas disponibles.";
                     }
 
-                    // Cerrar la conexión
-                    $conn->close();
                     ?>
                 </select>
             </div>
@@ -178,18 +156,6 @@
                 <select name="id_atacado">
                     <option value="">Seleccione jugador</option>
                     <?php
-                    // Conexión a la base de datos
-                    $servername = "localhost";
-                    $username = "root";
-                    $password = "";
-                    $database = "brawl_stars";
-
-                    $conn = new mysqli($servername, $username, $password, $database);
-
-                    if ($conn->connect_error) {
-                        die("Conexión fallida: " . $conn->connect_error);
-                    }
-
                     // Obtener el ID del mundo desde el formulario
                     $id_mundo = $_POST['id_mundo'] ?? null;
 
@@ -217,8 +183,6 @@
                         echo "ID del mundo no recibido.";
                     }
 
-                    // Cerrar la conexión
-                    $conn->close();
                     ?>
 
                 </select>

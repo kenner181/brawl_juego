@@ -1,17 +1,14 @@
 <?php
-// Parámetros de conexión a la base de datos
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "brawl_stars";
-
-// Crear conexión
-$conn = new mysqli($servername, $username, $password, $database);
-
-// Verificar la conexión
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
+session_start();
+if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
+    
+    header("Location: ../../iniciar_sesion.php");
+    exit; 
 }
+require_once("../../conexion/conexion.php");
+$db = new Database();
+$con = $db->getConnection();
+
 
 // Verificar si se han recibido los datos del formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

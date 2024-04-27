@@ -1,29 +1,29 @@
 <?php
-// Conexión a la base de datos
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "brawl_stars";
-
-$conn = new mysqli($servername, $username, $password, $database);
-
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
+session_start();
+if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
+    header("Location: ../../iniciar_sesion.php");
+    exit; 
 }
+require_once("../../conexion/conexion.php");
+$db = new Database();
+$con = $db->getConnection();
 
-// Obtener todos los mapas
+// Obtener el id del usuario activo
+$id_usuario = $_SESSION['username']; // Ajusta esto según la forma en que almacenas el id de usuario en la sesión
+
 $sql_mapas = "SELECT * FROM mundos";
 
-$result_mapas = $conn->query($sql_mapas);
+$stmt = $con->prepare($sql_mapas);
+$stmt->execute();
+$result_mapas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-if ($result_mapas->num_rows > 0) {
-    $mapas = $result_mapas->fetch_all(MYSQLI_ASSOC);
+if ($stmt->rowCount() > 0) {
+    // Si hay resultados, almacenarlos en un array asociativo
+    $mapas = $result_mapas;
 } else {
+    // Si no hay resultados, inicializar $mapas como un array vacío
     $mapas = [];
 }
-
-// Cerrar la conexión
-$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -56,19 +56,17 @@ $conn->close();
         <div class="swiper-wrapper">
             <?php foreach ($mapas as $mapa) : ?>
                 <div class="swiper-slide">
+                    <!-- Contenido de cada slide -->
                     <img src="<?php echo $mapa['foto']; ?>" alt="<?php echo $mapa['nombre_mundo']; ?>">
                     <h2 class="card__title"><?php echo $mapa['nombre_mundo']; ?></h2>
-                    <!-- Aquí está el formulario que contiene el botón "Unirse" -->
                     <form action="unirse_mundo.php" method="post">
                         <input type="hidden" name="id_mundo" value="<?php echo $mapa['id_mundo']; ?>">
-                        <!-- Aquí deberías obtener el id del usuario activo -->
-                        <input type="hidden" name="id_usuario" value="1">
+                        <input type="hidden" name="id_usuario" value="<?php echo $id_usuario; ?>"> <!-- Aquí se incluye el id del usuario activo -->
                         <button type="submit" class="btn btn-primary diagonal">Unirse</button>
                     </form>
                     <form action="sala.php" method="post">
                         <input type="hidden" name="id_mundo" value="<?php echo $mapa['id_mundo']; ?>">
-                        <!-- Aquí deberías obtener el id del usuario activo -->
-                        <input type="hidden" name="id_usuario" value="1">
+                        <input type="hidden" name="id_usuario" value="<?php echo $id_usuario; ?>"> <!-- Aquí se incluye el id del usuario activo -->
                         <button type="submit" class="btn btn-primary diagonal">Unirse sala</button>
                     </form>
                 </div>
