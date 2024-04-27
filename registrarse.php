@@ -65,7 +65,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
 <body>
 	<div class="formulario">
 		<h1>Registrate</h1>
-		<form method="post" action="" id="formulario">
+		<form method="post" action="" id="formulario" enctype="multipart/form-data">
 			<div class="campos">
 				<input type="text" name="usuario" id="usuario">
 				<label>Usuario</label>
@@ -79,16 +79,14 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
 				<label>Contraseña</label>
 			</div>
 			<div class="campos">
-				<select class="campos" name="avatar">
+				<select name="avatar" id="avatarSelect">
 					<?php
-					$control = $con->prepare("SELECT id_avatar, nombre FROM avatar");
+					$control = $con->prepare("SELECT id_avatar, foto FROM avatar");
 					$control->execute();
 					while ($fila = $control->fetch(PDO::FETCH_ASSOC)) {
-						echo "<option value='" . $fila['id_avatar'] . "'>" . $fila['nombre'] . "</option>";
+						echo "<option value='" . $fila['id_avatar'] . "' data-image='" . $fila['foto'] . "'>" . $fila['foto'] . "</option>";
 					}
 					?>
-
-
 				</select>
 			</div>
 			<input type="submit" name="validar" value="Registrarse">

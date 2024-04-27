@@ -33,7 +33,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
 		echo '<script>window.location="registrarse.php"</script>';
 	} else if ($fila) {
 		echo '<script>alert ("USUARIO YA REGISTRADO"); </script>';
-		echo '<script>window.location="usuario.php"</script>';
+		echo '<script>window.location="usuarios.php"</script>';
 	} else {
 		$password = password_hash($contrasena, PASSWORD_DEFAULT, array("pass" => 12));
 		$insertSQL = $con->prepare("INSERT INTO usuarios(username,contrasena,correo,puntaje,vida,id_estado,id_rol,id_nivel,id_avatar) 
@@ -48,10 +48,9 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
 
 
 // Preparar y ejecutar la consulta SQL para mostrar en tabla
-$query = $con->prepare("SELECT usuarios.username, usuarios.correo, roles.rol, niveles.nombre_nivel, estado.estado 
+$query = $con->prepare("SELECT usuarios.username, usuarios.correo, roles.rol, estado.estado 
     FROM usuarios 
     JOIN roles ON usuarios.id_rol = roles.id_rol 
-    JOIN niveles ON usuarios.id_nivel = niveles.id_nivel
     JOIN estado ON usuarios.id_estado = estado.id_estado;
     ");
 $query->execute();
@@ -73,7 +72,7 @@ $resultados = $query->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <?php include("nav.php") ?>
     <div class="container-fluid row">
-        <form class="col-4 p-3" method="post">
+        <form class="col-4 p-3" method="post" enctype="multipart/form-data">
             <h3 class="text-center text-secondary">Registrar Jugador</h3>
             <div class="mb-3">
                 <label for="usuario" class="form-label">Nombre de Usuario</label>
@@ -93,7 +92,7 @@ $resultados = $query->fetchAll(PDO::FETCH_ASSOC);
             <label for="avatar" class="form-label">Avatar</label>
                 <select class="form-control" name="avatar">
                     <?php
-                    $control = $con->prepare("SELECT id_avatar, nombre FROM avatar");
+                    $control = $con->prepare("SELECT * FROM avatar");
                     $control->execute();
                     while ($fila = $control->fetch(PDO::FETCH_ASSOC)) {
                         echo "<option value='" . $fila['id_avatar'] . "'>" . $fila['nombre'] . "</option>";
@@ -102,12 +101,11 @@ $resultados = $query->fetchAll(PDO::FETCH_ASSOC);
 
                 </select>
             </div>
+            
 
             <input type="submit" class="btn btn-primary" name="validar" value="Registrarse">
             <input type="hidden" name="MM_insert" value="formreg">
         </form>
-
-
 
         <div class="col-8 p-4">
             <table class="table">
@@ -115,32 +113,44 @@ $resultados = $query->fetchAll(PDO::FETCH_ASSOC);
                     <tr>
                         <th scope="col">Usuario</th>
                         <th scope="col">Correo</th>
+                        <th scope="col">Avatar</th>
                         <th scope="col">Rol</th>
                         <th scope="col">Nivel</th>
                         <th scope="col">Estado</th>
-                        <th scope="col"></th>
+                        <th scope="col">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($resultados as $fila) : ?>
+                <?php
+                    // Consulta de armas
+                    $consulta = "SELECT * FROM usuarios, avatar, roles, estado WHERE usuarios.id_avatar = avatar.id_avatar AND usuarios.id_rol = roles.id_rol AND usuarios.id_estado = estado.id_estado ";
+                    $resultado = $con->query($consulta);
+
+                    while ($fila = $resultado->fetch()) {
+                    ?>
                         <tr>
-                            <td><?php echo $fila['username']; ?></td>
-                            <td><?php echo $fila['correo']; ?></td>
-                            <td><?php echo $fila['rol']; ?></td>
-                            <td><?php echo $fila['nombre_nivel']; ?></td>
-                            <td><?php echo $fila['estado']; ?></td>
+                            <td><?php echo $fila["username"]; ?></td>
+                            <td><?php echo $fila["correo"]; ?></td>
+                            <td><img src="<?php echo $fila["foto"]; ?>" alt="Avatar" style="max-width: 100px;"></td>
+                            <td><?php echo $fila["rol"]; ?></td>
+                            <td><?php echo $fila["id_nivel"]; ?></td>
+                            <td><?php echo $fila["estado"]; ?></td>
                             <td>
-                                <a href="" class="btn btn-small btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
-                                <a href="" class="btn btn-small btn-danger"><i class="fa-solid fa-user-xmark"></i></a>
+                                <div class="text-center">
+                                    <div class="d-flex justify-content-start">
+                                        <a href="edit_usu.php?id=<?php echo $fila["id"]; ?>" class="btn btn-primary btn-sm me-2"><i class="fa-solid fa-pen-to-square"></i></a>
+                                        <a href="elim_usu.php?id=<?php echo $fila["id"]; ?>" class="btn btn-danger btn-sm"><i class="fa-solid fa-user-xmark"></i></a>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
-
+                <?php
+                        }
+                    ?>
                 </tbody>
             </table>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 </body>
-
 </html>

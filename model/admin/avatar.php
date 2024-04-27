@@ -99,21 +99,30 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($resultados as $fila) : ?>
+                <?php
+                    // Consulta de armas
+                    $consulta = "SELECT * FROM avatar ";
+                    $resultado = $con->query($consulta);
+
+                    while ($fila = $resultado->fetch()) {
+                    ?>
                         <tr>
-                            <td><?php echo $fila['nombre']; ?></td>
+                            <td><?php echo $fila["nombre"]; ?></td>
+                            <td><img src="<?php echo $fila["foto"]; ?>" alt="Avatar" style="max-width: 100px;"></td>
+                            <td><img src="<?php echo $fila["personaje"]; ?>" alt="Avatar" style="width: 80px; height: 90px;;"></td>
+                            
                             <td>
-                                <img src="<?php echo $fila['foto']; ?>" style="max-width: 100px;">
-                            </td>
-                            <td>
-                                <img src="<?php echo $fila['personaje']; ?>" style="max-width: 100px;">
-                            </td>
-                            <td>
-                                <a href="" class="btn btn-small btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
-                                <a href="" class="btn btn-small btn-danger"><i class="fa-solid fa-user-xmark"></i></a>
+                                <div class="text-center">
+                                    <div class="d-flex justify-content-start">
+                                        <a href="edit_ava.php?id_avatar=<?php echo $fila["id_avatar"]; ?>" class="btn btn-primary btn-sm me-2"><i class="fa-solid fa-pen-to-square"></i></a>
+                                        <a href="elim_ava.php?id_avatar=<?php echo $fila["id_avatar"]; ?>" class="btn btn-danger btn-sm"><i class="fa-solid fa-user-xmark"></i></a>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
+                <?php
+                        }
+                    ?>
 
                 </tbody>
             </table>

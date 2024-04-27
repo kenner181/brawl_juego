@@ -69,21 +69,32 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
                     <tr>
                         <th scope="col">ID </th>
                         <th scope="col">Rol</th>
-                        <th scope="col"></th>
+                        <th scope="col">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($resultados as $fila) : ?>
-                        <tr>
-                            <td><?php echo $fila['id_rol']; ?></td>
-                            <td><?php echo $fila['rol']; ?></td>
+                <?php
+                    // Consulta de armas
+                    $consulta = "SELECT * FROM roles ";
+                    $resultado = $con->query($consulta);
 
+                    while ($fila = $resultado->fetch()) {
+                    ?>
+                        <tr>
+                            <td><?php echo $fila["id_rol"]; ?></td>
+                            <td><?php echo $fila["rol"]; ?></td>
                             <td>
-                                <a href="" class="btn btn-small btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
-                                <a href="" class="btn btn-small btn-danger"><i class="fa-solid fa-user-xmark"></i></a>
+                                <div class="text-center">
+                                    <div class="d-flex justify-content-start">
+                                        <a href="edit_rol.php?id_rol=<?php echo $fila["id_rol"]; ?>" class="btn btn-primary btn-sm me-2"><i class="fa-solid fa-pen-to-square"></i></a>
+                                        <a href="elim_rol.php?id_rol=<?php echo $fila["id_rol"]; ?>" class="btn btn-danger btn-sm"><i class="fa-solid fa-user-xmark"></i></a>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
+                <?php
+                        }
+                    ?>
 
                 </tbody>
             </table>

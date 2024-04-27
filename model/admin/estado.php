@@ -75,17 +75,28 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")){
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($resultados as $fila) : ?>
-                        <tr>
-                            <td><?php echo $fila['id_estado']; ?></td>
-                            <td><?php echo $fila['estado']; ?></td>
+                <?php
+                    // Consulta de armas
+                    $consulta = "SELECT * FROM estado ";
+                    $resultado = $con->query($consulta);
 
+                    while ($fila = $resultado->fetch()) {
+                    ?>
+                        <tr>
+                            <td><?php echo $fila["id_estado"]; ?></td>
+                            <td><?php echo $fila["estado"]; ?></td>
                             <td>
-                                <a href="" class="btn btn-small btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
-                                <a href="" class="btn btn-small btn-danger"><i class="fa-solid fa-user-xmark"></i></a>
+                                <div class="text-center">
+                                    <div class="d-flex justify-content-start">
+                                        <a href="edit_est.php?id_estado=<?php echo $fila["id_estado"]; ?>" class="btn btn-primary btn-sm me-2"><i class="fa-solid fa-pen-to-square"></i></a>
+                                        <a href="elim_est.php?id_estado=<?php echo $fila["id_estado"]; ?>" class="btn btn-danger btn-sm"><i class="fa-solid fa-user-xmark"></i></a>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
+                <?php
+                        }
+                    ?>
 
                 </tbody>
             </table>

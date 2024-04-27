@@ -9,9 +9,8 @@ require_once("../../conexion/conexion.php");
 $db = new Database();
 $con = $db->getConnection();
 
-$query = $con->prepare("SELECT armas.nombre_arma, armas.dano, armas.imagen_arma, niveles.nombre_nivel 
-FROM armas 
-JOIN niveles ON armas.id_nivel = niveles.id_nivel");
+$query = $con->prepare("SELECT armas.nombre_arma, armas.dano, armas.imagen_arma, armas.id_nivel
+FROM armas ");
 $query->execute();
 $resultados = $query->fetchAll(PDO::FETCH_ASSOC);
 
@@ -63,37 +62,24 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")){
 <body>
     <?php include("nav.php") ?>
     <div class="container-fluid row">
-        <form class="col-4 p-3" method="post" enctype="multipart/form-data">
+    <form class="col-4 p-3" method="post" enctype="multipart/form-data">
             <h3 class="text-center text-secondary">Registrar Armas</h3>
             <div class="mb-3">
-                <label for="usuario" class="form-label">Arma</label>
+                <label for="nombre" class="form-label">Arma</label>
                 <input type="text" class="form-control" name="nombre">
-
             </div>
             <div class="mb-3">
-                <label for="foto" class="form-label">Daño</label>
+                <label for="dano" class="form-label">Daño</label>
                 <input type="text" class="form-control" name="dano">
-
             </div>
             <div class="mb-3">
                 <label for="foto" class="form-label">Img</label>
                 <input type="file" class="form-control" name="foto" accept="image">
-
             </div>
             <div class="mb-3">
-                <label for="foto" class="form-label">Nivel</label>
-                <select class="form-control" name="nivel">
-                    <?php
-                    $control = $con->prepare("SELECT id_nivel, nombre_nivel FROM niveles");
-                    $control->execute();
-                    while ($fila = $control->fetch(PDO::FETCH_ASSOC)) {
-                        echo "<option value='" . $fila['id_nivel'] . "'>" . $fila['nombre_nivel'] . "</option>";
-                    }
-                    ?>
-
-                </select>
-            </div>
-
+                <label for="nivel" class="form-label">Nivel</label>
+                <input type="text" class="form-control" name="nivel">
+            </div>  
             <input type="submit" class="btn btn-primary" name="validar" value="Registrarse">
             <input type="hidden" name="MM_insert" value="formreg">
         </form>
@@ -110,24 +96,30 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")){
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($resultados as $fila) : ?>
-                        <tr>
-                            <td><?php echo $fila['nombre_arma']; ?></td>
-                            <td><?php echo $fila['dano']; ?></td>
-                            <td>
-                                <img src="<?php echo $fila['imagen_arma']; ?>" alt="Imagen del arma" style="max-width: 100px;">
-                            </td>
+                <?php
+                        // Consulta de armas
+                        $consulta = "SELECT * FROM armas" ;
+                        $resultado = $con->query($consulta);
 
-                            <td><?php echo $fila['nombre_nivel']; ?></td>
-
-                            <td>
-                                <a href="editar/edit_arm.php?id_arma=<?php echo $fila['id_arma']; ?>" class="btn btn-small btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
-                                <a href="" class="btn btn-small btn-danger"><i class="fa-solid fa-user-xmark"></i></a>
-                            </td>
-
-                        </tr>
-                    <?php endforeach; ?>
-
+                        while ($fila = $resultado->fetch()) {
+                        ?>
+                            <tr>
+                                <td><?php echo $fila["nombre_arma"]; ?></td>
+                                <td><?php echo $fila["dano"]; ?></td>
+                                <td><img src="<?php echo $fila['imagen_arma']; ?>" alt="Imagen del arma" style="max-width: 100px;"></td>
+                                <td><?php echo $fila["id_nivel"]; ?></td>
+                                <td>
+                                    <div class="text-center">
+                                        <div class="d-flex justify-content-start">
+                                            <a href="edit_arm.php?id_arma=<?php echo $fila["id_arma"]; ?>" class="btn btn-primary btn-sm me-2"><i class="fa-solid fa-pen-to-square"></i></a>
+                                            <a href="elim_arm.php?id_arma=<?php echo $fila["id_arma"]; ?>" class="btn btn-danger btn-sm"><i class="fa-solid fa-user-xmark"></i></a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                    <?php
+                            }
+                        ?>
                 </tbody>
             </table>
         </div>

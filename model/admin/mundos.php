@@ -82,22 +82,32 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
                     <tr>
                         <th scope="col">Mundo</th>
                         <th scope="col">Foto</th>
-                        <th scope="col"> </th>
+                        <th scope="col">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($resultados as $fila) : ?>
+                <?php
+                    // Consulta de armas
+                    $consulta = "SELECT * FROM mundos ";
+                    $resultado = $con->query($consulta);
+
+                    while ($fila = $resultado->fetch()) {
+                    ?>
                         <tr>
-                            <td><?php echo $fila['nombre_mundo']; ?></td>
-                            <td><img src="<?php echo $fila['foto']; ?>" alt="Foto del Mundo" style="max-width: 100px;"></td>
-
-
+                            <td><?php echo $fila["nombre_mundo"]; ?></td>
+                            <td><img src="<?php echo $fila["foto"]; ?>" alt="Avatar" style="max-width: 100px;"></td>
                             <td>
-                                <a href="" class="btn btn-small btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
-                                <a href="" class="btn btn-small btn-danger"><i class="fa-solid fa-user-xmark"></i></a>
+                                <div class="text-center">
+                                    <div class="d-flex justify-content-start">
+                                        <a href="edit_mun.php?id_mundo=<?php echo $fila["id_mundo"]; ?>" class="btn btn-primary btn-sm me-2"><i class="fa-solid fa-pen-to-square"></i></a>
+                                        <a href="elim_mun.php?id_mundo=<?php echo $fila["id_mundo"]; ?>" class="btn btn-danger btn-sm"><i class="fa-solid fa-user-xmark"></i></a>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
+                <?php
+                        }
+                    ?>
 
                 </tbody>
             </table>

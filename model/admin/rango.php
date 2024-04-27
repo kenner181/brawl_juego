@@ -29,10 +29,10 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")){
 
     if ($rango == "" || $foto_destino == "") {
 		echo '<script>alert ("Datos Vacios"); </script>';
-		echo '<script>window.location="armas.php"</script>';
+		echo '<script>window.location="rango.php"</script>';
 	} else if ($fila) {
-		echo '<script>alert ("ARMA YA REGISTRADA"); </script>';
-		echo '<script>window.location="armas.php"</script>';
+		echo '<script>alert ("RANGO YA REGISTRADA"); </script>';
+		echo '<script>window.location="rango.php"</script>';
 	} else {
 		
 		$insertSQL = $con->prepare("INSERT INTO rango (nombre_ran,imagen_ran) 
@@ -83,17 +83,28 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")){
                         <th scope="col">Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <?php foreach ($resultados as $fila) : ?>
+                <?php
+                    // Consulta de armas
+                    $consulta = "SELECT * FROM rango ";
+                    $resultado = $con->query($consulta);
+
+                    while ($fila = $resultado->fetch()) {
+                    ?>
                         <tr>
-                            <td><?php echo $fila['nombre_ran']; ?></td>
-                            <td><img src="<?php echo $fila['imagen_ran']; ?>" style="max-width: 100px;"></td>
+                            <td><?php echo $fila["nombre_ran"]; ?></td>
+                            <td><img src="<?php echo $fila["imagen_ran"]; ?>" alt="Avatar" style="max-width: 100px;"></td>
                             <td>
-                                <a href="" class="btn btn-small btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
-                                <a href="" class="btn btn-small btn-danger"><i class="fa-solid fa-user-xmark"></i></a>
+                                <div class="text-center">
+                                    <div class="d-flex justify-content-start">
+                                        <a href="edit_ran.php?id_rango=<?php echo $fila["id_rango"]; ?>" class="btn btn-primary btn-sm me-2"><i class="fa-solid fa-pen-to-square"></i></a>
+                                        <a href="elim_ran.php?id_rango=<?php echo $fila["id_rango"]; ?>" class="btn btn-danger btn-sm"><i class="fa-solid fa-user-xmark"></i></a>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
+                <?php
+                        }
+                    ?>
 
                 </tbody>
             </table>
