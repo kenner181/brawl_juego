@@ -1,19 +1,69 @@
 <?php
 session_start();
-if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
-    
-    header("Location: ../../iniciar_sesion.php");
+
+// Verificar si el usuario está autenticado
+if (!isset($_SESSION['id_usuario']) || empty($_SESSION['id_usuario'])) {
+    // Si el usuario no está autenticado, mostrar un mensaje y redirigirlo a la página de inicio de sesión
+    echo '
+        <script>
+            alert("Por favor inicie sesión e intente nuevamente");
+            window.location = "../iniciar_sesion.php";
+        </script>
+    ';
     exit; 
 }
 require_once("../../conexion/conexion.php");
 $db = new Database();
 $con = $db->getConnection();
 
-$query = "SELECT * FROM usuarios WHERE id_avatar = :username";
+// Función para determinar el id_rango basado en el puntaje
+function determinarRango($puntaje) {
+    if ($puntaje <= 500) {
+        return 1;
+    } elseif ($puntaje > 500 && $puntaje <= 750) {
+        return 2;
+    } elseif ($puntaje > 750 && $puntaje <= 1000) {
+        return 3;
+    } else {
+        return 4;
+    }
+}
+
+$query = "SELECT usuarios.username, avatar.foto AS avatar, usuarios.puntaje, usuarios.id_rango, rango.nombre AS nombre_rango, rango.foto AS foto_rango,
+          avatar.personaje AS foto_personaje
+          FROM usuarios
+          INNER JOIN rango ON usuarios.id_rango = rango.id_rango
+          INNER JOIN avatar ON usuarios.id_avatar = avatar.id_avatar
+          WHERE usuarios.id = :id_usuario";
 $stmt = $con->prepare($query);
-$stmt->bindParam(':username', $username);
+$stmt->bindParam(':id_usuario', $_SESSION['id_usuario']);
 $stmt->execute();
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Determinar el nuevo id_rango
+$nuevo_id_rango = determinarRango($user['puntaje']);
+
+// Actualizar el id_rango si es diferente al actual
+if ($nuevo_id_rango != $user['id_rango']) {
+    $query_update_rango = "UPDATE usuarios SET id_rango = :id_rango WHERE id = :id_usuario";
+    $stmt_update_rango = $con->prepare($query_update_rango);
+    $stmt_update_rango->bindParam(':id_rango', $nuevo_id_rango);
+    $stmt_update_rango->bindParam(':id_usuario', $_SESSION['id_usuario']);
+    $stmt_update_rango->execute();
+}
+
+// Obtener los datos actualizados del usuario
+$query_actualizado = "SELECT usuarios.username, usuarios.puntaje, avatar.foto AS avatar, rango.nombre AS nombre_rango, rango.foto AS foto_rango,
+                      avatar.personaje AS foto_personaje
+                      FROM usuarios
+                      INNER JOIN rango ON usuarios.id_rango = rango.id_rango
+                      INNER JOIN avatar ON usuarios.id_avatar = avatar.id_avatar
+                      WHERE usuarios.id = :id_usuario";
+$stmt_actualizado = $con->prepare($query_actualizado);
+$stmt_actualizado->bindParam(':id_usuario', $_SESSION['id_usuario']);
+$stmt_actualizado->execute();
+$user_actualizado = $stmt_actualizado->fetch(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -35,35 +85,32 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
         <header>
             <div class="perfil">
                 <div class="avatar">
-                    <img src="<?php echo $user['foto']; ?>" alt="Avatar" class="img_per">
-                    <p>Nombre</p>
-                </div>
-                <div class="info" >
-                    <p>Nivel: <span>1</span></p> 
-                    <p>Puntos: <span>500</span></p>
+                    <img src="<?php echo $user_actualizado['avatar']; ?>" alt="Avatar" class="img_per">
+                    <p><?php echo $user_actualizado['username']; ?></p>
+                    <p>Rango: <span><?php echo $user_actualizado['nombre_rango']; ?></span></p> 
+                    <p>puntaje: <span><?php echo $user_actualizado['puntaje']; ?></span></p> 
                 </div>
             </div>
-             <div class="rango">
-                <h4>Rango</h4>
-                <div class="liga">
-                    <img src="../../img/ranguito.png" alt="Rango" class="img_ran">
-                </div>
-            </div> 
         </header>
 
         <section class="contenido">
             <div class="content-wrapper">
                 <div class="image-container">
-                    <img src="../../img/bull.png" alt="Descripción de la imagen" class="imagen-dinamica">
+                    <img src="<?php echo $user_actualizado['foto_personaje']; ?>" alt="Descripción de la imagen" class="imagen-dinamica">
                     <div class="button-container">
-                        <button type="button" class="btn btn-primary diagonal"><a href="#">UNIRSE A PARTIDA</a></button>
+                        <a href="mapas.php" class="btn btn-primary diagonal">UNIRSE A PARTIDA</a>
                     </div>
                 </div>
             </div>
         </section>
 
         <aside>
+        <div class="info" >
+                    
+                    <img src="<?php echo $user_actualizado['foto_rango']; ?>" alt="Rango" class="img_ran">
+                </div>
             <div class="menu">
+                
                 <h4>Opciones</h4>
                 <ul>
                     <a href="mapas.php">

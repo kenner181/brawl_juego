@@ -10,8 +10,8 @@ $db = new Database();
 $con = $db->getConnection();
 
 $sql = "SELECT * FROM armas
-INNER JOIN tip_arma ON armas.id_tip_arm = tip_arma.id_tip_arm
-INNER JOIN usuarios ON armas.id_nivel = usuarios.id_nivel
+INNER JOIN tip_arma ON armas.id_tip_arma = tip_arma.id_tip_arma
+INNER JOIN usuarios ON armas.id_rango = usuarios.id_rango
 GROUP BY armas.id_arma";
 $result = $con->query($sql);
 
@@ -53,14 +53,14 @@ $result = $con->query($sql);
         $currentCategory = "";
         while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
             // Verificar si la categoría ha cambiado
-            if ($currentCategory != $row['tip_arm']) {
+            if ($currentCategory != $row['tip_arma']) {
                 // Si es así, imprimir el encabezado de la categoría y comenzar un nuevo área de caja
                 if ($currentCategory != "") {
                     // Cerrar la caja del área anterior
                     echo '</div></div>';
                 }
                 // Actualizar la categoría actual
-                $currentCategory = $row['tip_arm'];
+                $currentCategory = $row['tip_arma'];
                 // Imprimir el encabezado de la categoría y comenzar un nuevo área de caja
                 echo '<div class="wrapper">';
                 echo '<h3 class="sub-subtitulo">' . $currentCategory . '</h3>';

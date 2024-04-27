@@ -1,16 +1,42 @@
 <?php
 session_start();
-if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
-    
-    header("Location: ../../iniciar_sesion.php");
+
+// Verificar si el usuario está autenticado
+if (!isset($_SESSION['id_usuario']) || empty($_SESSION['id_usuario'])) {
+    // Si el usuario no está autenticado, mostrar un mensaje y redirigirlo a la página de inicio de sesión
+    echo '
+        <script>
+            alert("Por favor inicie sesión e intente nuevamente");
+            window.location = "../iniciar_sesion.php";
+        </script>
+    ';
     exit; 
 }
+
 require_once("../../conexion/conexion.php");
 $db = new Database();
 $con = $db->getConnection();
+
+// Consulta para eliminar los jugadores con 0 de vida o con id_rango diferente al del mapa
+$sql_eliminar_jugadores = "DELETE FROM detalle_mundo 
+                           WHERE (id_jugador IN (SELECT usuarios.id 
+                                                FROM usuarios 
+                                                WHERE usuarios.vida <= 0)
+                                  OR id_jugador IN (SELECT usuarios.id 
+                                                    FROM usuarios 
+                                                    INNER JOIN mundos ON usuarios.id_rango != mundos.id_rango
+                                                    WHERE mundos.id_mundo = ?))";
+
+$stmt_eliminar_jugadores = $con->prepare($sql_eliminar_jugadores);
+$stmt_eliminar_jugadores->execute([$_POST['id_mundo']]); // Aquí se debe asegurar que id_mundo esté presente en el formulario que envía los datos a este script
+
+// Mensaje para mostrar los jugadores eliminados
+$jugadores_eliminados = $stmt_eliminar_jugadores->rowCount();
+if ($jugadores_eliminados > 0) {
+    echo "<script>alert('Se han eliminado $jugadores_eliminados jugadores cuya vida era 0 o menor o cuyo rango era diferente al del mapa.');</script>";
+}
+
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -53,15 +79,13 @@ $con = $db->getConnection();
                 if ($id_mundo) {
                     // Consulta SQL para obtener la foto del mundo específico
                     $sql_foto_mundo = "SELECT foto FROM mundos WHERE id_mundo = ?";
-                    $stmt_foto_mundo = $conn->prepare($sql_foto_mundo);
-                    $stmt_foto_mundo->bind_param("i", $id_mundo);
-                    $stmt_foto_mundo->execute();
-                    $result_foto_mundo = $stmt_foto_mundo->get_result();
+                    $stmt_foto_mundo = $con->prepare($sql_foto_mundo);
+                    $stmt_foto_mundo->execute([$id_mundo]);
+                    $result_foto_mundo = $stmt_foto_mundo->fetch(PDO::FETCH_ASSOC);
 
-                    if ($result_foto_mundo->num_rows > 0) {
+                    if ($result_foto_mundo) {
                         // Obtener la ruta de la foto del mundo
-                        $row_foto_mundo = $result_foto_mundo->fetch_assoc();
-                        $foto_mapa = $row_foto_mundo['foto'];
+                        $foto_mapa = $result_foto_mundo['foto'];
 
                         // Imprimir la ruta de la imagen del mundo
                         echo '<img src="' . $foto_mapa . '" alt="Mapa">';
@@ -94,14 +118,13 @@ $con = $db->getConnection();
                     INNER JOIN avatar ON usuarios.id_avatar = avatar.id_avatar
                     WHERE detalle_mundo.id_mundo = ?";
 
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("i", $id_mundo);
-                $stmt->execute();
-                $result = $stmt->get_result();
+                $stmt = $con->prepare($sql);
+                $stmt->execute([$id_mundo]);
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                if ($result->num_rows > 0) {
+                if ($result) {
                     // Mostrar los jugadores y sus datos
-                    while ($row = $result->fetch_assoc()) {
+                    foreach ($result as $row) {
                         echo '<div class="box">';
                         echo '<div class="imgbx">';
                         // Mostrar la foto del jugador en lugar de la ruta
@@ -135,17 +158,23 @@ $con = $db->getConnection();
                 <select name="id_arma">
                     <option value="">Seleccione Arma</option>
                     <?php
-                    // Consulta SQL para obtener las armas
-                    $sql_armas = "SELECT id_arma, nombre_arma FROM armas";
-                    $result_armas = $conn->query($sql_armas);
+                    // Consulta SQL para obtener las armas según el rango del mundo y los jugadores
+                    $sql_armas = "SELECT id_arma, nombre_arma ,municion
+                                  FROM armas 
+                                  WHERE id_rango <= (SELECT id_rango FROM mundos WHERE id_mundo = ?) 
+                                  AND id_rango <= (SELECT id_rango FROM usuarios WHERE id = ?)";
 
-                    if ($result_armas->num_rows > 0) {
+                    $stmt_armas = $con->prepare($sql_armas);
+                    $stmt_armas->execute([$id_mundo, $_SESSION['id_usuario']]);
+                    $result_armas = $stmt_armas->fetchAll(PDO::FETCH_ASSOC);
+
+                    if ($result_armas) {
                         // Mostrar las opciones de las armas
-                        while ($row_arma = $result_armas->fetch_assoc()) {
-                            echo '<option value="' . $row_arma['id_arma'] . '">' . $row_arma['nombre_arma'] . '</option>';
+                        foreach ($result_armas as $row_arma) {
+                            echo '<option value="' . $row_arma['id_arma'] . '">' . $row_arma['nombre_arma'] .' '. 'municion: ' . $row_arma['municion'] .'</option>';
                         }
                     } else {
-                        echo "No se encontraron armas disponibles.";
+                        echo "No se encontraron armas disponibles para este rango.";
                     }
 
                     ?>
@@ -160,20 +189,19 @@ $con = $db->getConnection();
                     $id_mundo = $_POST['id_mundo'] ?? null;
 
                     if ($id_mundo) {
-                        // Consulta SQL para obtener los jugadores unidos al mundo o mapa
+                        // Consulta SQL para obtener los jugadores unidos al mundo o mapa, excluyendo al jugador en sesión activa
                         $sql_jugadores = "SELECT usuarios.id, usuarios.username 
                     FROM usuarios 
                     INNER JOIN detalle_mundo ON usuarios.id = detalle_mundo.id_jugador
-                    WHERE detalle_mundo.id_mundo = ?";
+                    WHERE detalle_mundo.id_mundo = ? AND usuarios.id != ?"; // Excluir al jugador en sesión activa
 
-                        $stmt_jugadores = $conn->prepare($sql_jugadores);
-                        $stmt_jugadores->bind_param("i", $id_mundo);
-                        $stmt_jugadores->execute();
-                        $result_jugadores = $stmt_jugadores->get_result();
+                        $stmt_jugadores = $con->prepare($sql_jugadores);
+                        $stmt_jugadores->execute([$id_mundo, $_SESSION['id_usuario']]);
+                        $result_jugadores = $stmt_jugadores->fetchAll(PDO::FETCH_ASSOC);
 
-                        if ($result_jugadores->num_rows > 0) {
+                        if ($result_jugadores) {
                             // Mostrar las opciones de los jugadores
-                            while ($row_jugador = $result_jugadores->fetch_assoc()) {
+                            foreach ($result_jugadores as $row_jugador) {
                                 echo '<option value="' . $row_jugador['id'] . '">' . $row_jugador['username'] . '</option>';
                             }
                         } else {
@@ -188,7 +216,7 @@ $con = $db->getConnection();
                 </select>
             </div>
             <input type="hidden" name="id_mundo" value="<?php echo $id_mundo; ?>">
-            <input type="hidden" name="id_atacante" value="1"> <!-- Cambia $_SESSION['id'] por el nombre de tu variable de sesión -->
+            <input type="hidden" name="id_atacante" value="<?php echo $_SESSION['id_usuario']; ?>"> <!-- Cambia $_SESSION['id'] por el nombre de tu variable de sesión -->
             <input type="submit" name="inicio" value="Atacar">
             <br><br>
         </form>

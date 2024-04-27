@@ -13,7 +13,7 @@
 <body>
     <div class="formulario">
         <h1>Bienvenido</h1>
-        <form method="post"  action="controller/inicio.php" id="formulario">
+        <form method="post" action="controller/inicio.php" id="formulario">
             <div class="campos">
                 <input type="text" name="username" id="username" >
                 <label>Username</label>

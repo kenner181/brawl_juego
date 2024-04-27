@@ -1,23 +1,40 @@
 <?php
 session_start();
-if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
-    header("Location: ../../iniciar_sesion.php");
-    exit; 
+
+// Verificar si el usuario está autenticado
+if (!isset($_SESSION['id_usuario']) || empty($_SESSION['id_usuario'])) {
+    // Si el usuario no está autenticado, mostrar un mensaje y redirigirlo a la página de inicio de sesión
+    echo '
+        <script>
+            alert("Por favor inicie sesión e intente nuevamente");
+            window.location = "../iniciar_sesion.php";
+        </script>
+    ';
+    exit;
 }
+
 require_once("../../conexion/conexion.php");
 $db = new Database();
 $con = $db->getConnection();
 
 // Obtener el id del usuario activo
-$id_usuario = $_SESSION['username']; // Ajusta esto según la forma en que almacenas el id de usuario en la sesión
+$id_usuario = $_SESSION['id_usuario']; // Ajusta esto según cómo almacenas el id de usuario en la sesión
 
-$sql_mapas = "SELECT * FROM mundos";
+// Obtener el id_rango del usuario activo
+$query_id_rango = "SELECT id_rango FROM usuarios WHERE id = :id_usuario";
+$stmt_id_rango = $con->prepare($query_id_rango);
+$stmt_id_rango->bindParam(':id_usuario', $id_usuario);
+$stmt_id_rango->execute();
+$id_rango_usuario = $stmt_id_rango->fetchColumn();
 
-$stmt = $con->prepare($sql_mapas);
-$stmt->execute();
-$result_mapas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Consulta para obtener los mapas filtrados por id_rango
+$sql_mapas = "SELECT * FROM mundos WHERE id_rango = :id_rango_usuario";
+$stmt_mapas = $con->prepare($sql_mapas);
+$stmt_mapas->bindParam(':id_rango_usuario', $id_rango_usuario);
+$stmt_mapas->execute();
+$result_mapas = $stmt_mapas->fetchAll(PDO::FETCH_ASSOC);
 
-if ($stmt->rowCount() > 0) {
+if ($stmt_mapas->rowCount() > 0) {
     // Si hay resultados, almacenarlos en un array asociativo
     $mapas = $result_mapas;
 } else {
@@ -59,18 +76,35 @@ if ($stmt->rowCount() > 0) {
                     <!-- Contenido de cada slide -->
                     <img src="<?php echo $mapa['foto']; ?>" alt="<?php echo $mapa['nombre_mundo']; ?>">
                     <h2 class="card__title"><?php echo $mapa['nombre_mundo']; ?></h2>
-                    <form action="unirse_mundo.php" method="post">
-                        <input type="hidden" name="id_mundo" value="<?php echo $mapa['id_mundo']; ?>">
-                        <input type="hidden" name="id_usuario" value="<?php echo $id_usuario; ?>"> <!-- Aquí se incluye el id del usuario activo -->
-                        <button type="submit" class="btn btn-primary diagonal">Unirse</button>
-                    </form>
-                    <form action="sala.php" method="post">
-                        <input type="hidden" name="id_mundo" value="<?php echo $mapa['id_mundo']; ?>">
-                        <input type="hidden" name="id_usuario" value="<?php echo $id_usuario; ?>"> <!-- Aquí se incluye el id del usuario activo -->
-                        <button type="submit" class="btn btn-primary diagonal">Unirse sala</button>
-                    </form>
+
+                    <?php
+                    // Verificar si el usuario está registrado en este mundo
+                    $id_mundo = $mapa['id_mundo'];
+
+                    // Consulta para verificar si el usuario está registrado en este mundo
+                    $sql_verificar_registro = "SELECT COUNT(*) FROM detalle_mundo WHERE id_jugador = :id_usuario AND id_mundo = :id_mundo";
+                    $stmt_verificar_registro = $con->prepare($sql_verificar_registro);
+                    $stmt_verificar_registro->bindParam(':id_usuario', $id_usuario);
+                    $stmt_verificar_registro->bindParam(':id_mundo', $id_mundo);
+                    $stmt_verificar_registro->execute();
+                    $registro_existente = $stmt_verificar_registro->fetchColumn();
+
+                    // Determinar el texto y la acción del botón según el estado del registro del usuario en este mundo
+                    $boton_texto = $registro_existente ? "Ingresar al Mapa" : "Unirse al Mapa";
+                    $accion_formulario = $registro_existente ? "sala.php" : "unirse_mundo.php";
+
+                    // Mostrar el formulario con el botón correspondiente
+                    echo '<form action="' . $accion_formulario . '" method="post">';
+                    echo '<input type="hidden" name="id_mundo" value="' . $mapa['id_mundo'] . '">';
+                    echo '<input type="hidden" name="id_usuario" value="' . $id_usuario . '">';
+                    echo '<button type="submit" class="btn btn-primary diagonal">' . $boton_texto . '</button>';
+                    echo '</form>';
+                    ?>
+
                 </div>
             <?php endforeach; ?>
+
+
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>

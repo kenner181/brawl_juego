@@ -52,48 +52,49 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Varela+Round&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="css/ini.css">
-	<title>Inicio Sesión</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/ini.css">
+    <title>Inicio Sesión</title>
 </head>
 
 <body>
-	<div class="formulario">
-		<h1>Registrate</h1>
-		<form method="post" action="" id="formulario" enctype="multipart/form-data">
-			<div class="campos">
-				<input type="text" name="usuario" id="usuario">
-				<label>Usuario</label>
-			</div>
-			<div class="campos">
-				<input type="email" name="correo" id="corre">
-				<label>Correo</label>
-			</div>
-			<div class="campos">
-				<input type="password" name="contrasena" id="contrasena">
-				<label>Contraseña</label>
-			</div>
-			<div class="campos">
-				<select name="avatar" id="avatarSelect">
-					<?php
-					$control = $con->prepare("SELECT id_avatar, foto FROM avatar");
-					$control->execute();
-					while ($fila = $control->fetch(PDO::FETCH_ASSOC)) {
-						echo "<option value='" . $fila['id_avatar'] . "'>" . "<img src='" . $fila['foto'] . "' alt='Avatar'>" . "</option>";
-					}
-					?>
-				</select>
-			</div>
-			<input type="submit" name="validar" value="Registrarse">
-			<input type="hidden" name="MM_insert" value="formreg">
-			<br><br>
-		</form>
-	</div>
+    <div class="formulario">
+        <h1>Registrate</h1>
+        <form method="post" action="" id="formulario" enctype="multipart/form-data">
+            <div class="campos">
+                <input type="text" name="usuario" id="usuario">
+                <label>Usuario</label>
+            </div>
+            <div class="campos">
+                <input type="email" name="correo" id="correo"> <!-- Corregido el nombre del campo correo -->
+                <label>Correo</label>
+            </div>
+            <div class="campos">
+                <input type="password" name="contrasena" id="contrasena">
+                <label>Contraseña</label>
+            </div>
+            <div class="campos">
+                <select name="avatar" id="avatarSelect">
+                    <?php
+                    $control = $con->prepare("SELECT id_avatar, nombre, foto FROM avatar"); // Corregido el query para seleccionar el nombre y la foto del avatar
+                    $control->execute();
+                    while ($fila = $control->fetch(PDO::FETCH_ASSOC)) {
+                        // Cada opción del select muestra el nombre del avatar y su foto
+                        echo "<option value='" . $fila['id_avatar'] . "'>" . $fila['nombre'] . "<img src='" . $fila['foto'] . "' alt='Avatar'></option>";
+                    }
+                    ?>
+                </select>
+            </div>
+            <input type="submit" name="validar" value="Registrarse">
+            <input type="hidden" name="MM_insert" value="formreg">
+            <br><br>
+        </form>
+    </div>
 </body>
 
 </html>
