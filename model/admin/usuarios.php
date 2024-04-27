@@ -103,7 +103,7 @@ $resultados = $query->fetchAll(PDO::FETCH_ASSOC);
             </div>
             
 
-            <input type="submit" class="btn btn-primary" name="validar" value="Registrarse">
+            <input type="submit" class="btn btn-primary" name="validar" value="Registrar">
             <input type="hidden" name="MM_insert" value="formreg">
         </form>
 

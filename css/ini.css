@@ -105,3 +105,34 @@ input[type="submit"]:hover{
     transition: .5s;
 }
 
+
+/* Estilo base para el select */
+select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+/* Estilo cuando el select está enfocado (seleccionado) */
+select:focus {
+    border-color: #41156b; /* Cambia el color del borde al enfocar */
+}
+
+/* Estilo para opciones dentro del select */
+select option {
+    font-size: 16px;
+    background-color: #fff;
+    color: #333; /* Color del texto */
+}
+
+/* Estilo para la flecha desplegable en algunos navegadores */
+/* Esto puede variar según el navegador y el sistema operativo */
+select::-ms-expand {
+    display: none; /* Oculta la flecha en Internet Explorer */
+}

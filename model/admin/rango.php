@@ -78,8 +78,8 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")){
             <table class="table">
                 <thead class="bg-info">
                     <tr>
+                        <th scope="col">Nombre</th>
                         <th scope="col">Rango</th>
-                        <th scope="col">Imagen</th>
                         <th scope="col">Acciones</th>
                     </tr>
                 </thead>

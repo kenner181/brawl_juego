@@ -13,6 +13,7 @@
         <a class="nav-link" href="mundos.php">Mundos</a>
         <a class="nav-link" href="rango.php">Rangos</a>
         <a class="nav-link" href="armas.php">Armas</a>
+        <a class="nav-link" href="tip_armas.php">Tipo de Armas</a>
         <a class="nav-link" href="estado.php">Estados</a>
         <a class="nav-link" href="roles.php">Roles</a>
         <a class="nav-link" href="../../controller/logout.php">Cerrar sesiòn</a>

@@ -84,7 +84,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
 					$control = $con->prepare("SELECT id_avatar, foto FROM avatar");
 					$control->execute();
 					while ($fila = $control->fetch(PDO::FETCH_ASSOC)) {
-						echo "<option value='" . $fila['id_avatar'] . "' data-image='" . $fila['foto'] . "'>" . $fila['foto'] . "</option>";
+						echo "<option value='" . $fila['id_avatar'] . "'>" . "<img src='" . $fila['foto'] . "' alt='Avatar'>" . "</option>";
 					}
 					?>
 				</select>

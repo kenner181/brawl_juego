@@ -85,7 +85,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
                 <label for="personaje" class="form-label">Personaje</label>
                 <input type="file" class="form-control" name="personaje">
             </div>
-            <input type="submit" class="btn btn-primary" name="validar" value="Registrarse">
+            <input type="submit" class="btn btn-primary" name="validar" value="Registrar">
             <input type="hidden" name="MM_insert" value="formreg">
         </form>
         <div class="col-8 p-4">
@@ -93,7 +93,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
                 <thead class="bg-info">
                     <tr>
                         <th scope="col">Nombre</th>
-                        <th scope="col">Foto</th>
+                        <th scope="col">Avatar</th>
                         <th scope="col">Personaje</th>
                         <th scope="col">Acciones</th>
                     </tr>

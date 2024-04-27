@@ -8,6 +8,13 @@ if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
 require_once("../../conexion/conexion.php");
 $db = new Database();
 $con = $db->getConnection();
+
+$sql = "SELECT * FROM armas
+INNER JOIN tip_arma ON armas.id_tip_arm = tip_arma.id_tip_arm
+INNER JOIN usuarios ON armas.id_nivel = usuarios.id_nivel
+GROUP BY armas.id_arma";
+$result = $con->query($sql);
+
 ?>
 
 
@@ -40,126 +47,37 @@ $con = $db->getConnection();
 
     
     <div id="card-area">
-        <div class="wrapper">
-            <h3 class="sub-subtitulo">PUÑOS</h3>
-            <div class="box-area"> 
-                <div class="box">
-                    <img src="../../img/puño1.png" alt="">
-                    <div class="overlay">
-                        <h3>TRES STRIKES</h3>
-                        <i class="fa-solid fa-fire"><span> 300</span></i>
-                        <i class="fa-solid fa-person-rifle"><span> 15</span></i>
-                    </div>
-                </div>
-                <div class="box">
-                    <img src="../../img/puño2.png" alt="">
-                    <div class="overlay">
-                        <h3>LA BATIDORA</h3>
-                        <i class="fa-solid fa-fire"><span> 300</span></i>
-                        <i class="fa-solid fa-person-rifle"><span> 15</span></i>
-                    </div>
-                </div>
-                <div class="box">
-                    <img src="../../img/puño3.png" alt="">
-                    <div class="overlay">
-                        <h3>TRIKI TRAKE</h3>
-                        <i class="fa-solid fa-fire"><span> 300</span></i>
-                        <i class="fa-solid fa-person-rifle"><span> 15</span></i>
-                    </div>
-                </div>
-            </div>            
-        </div>
-
-        <div class="wrapper">
-            <h3 class="sub-subtitulo">PISTOLAS</h3>
-            <div class="box-area"> 
-                <div class="box">
-                    <img src="../../img/pistol1.png" alt="">
-                    <div class="overlay">
-                        <h3>PERDIGON</h3>
-                        <i class="fa-solid fa-fire"><span> 300</span></i>
-                        <i class="fa-solid fa-person-rifle"><span> 15</span></i>
-                    </div>
-                </div>
-                <div class="box">
-                    <img src="../../img/pistol2.png" alt="">
-                    <div class="overlay">
-                        <h3>FUSIL FRUNCIDO</h3>
-                        <i class="fa-solid fa-fire"><span> 300</span></i>
-                        <i class="fa-solid fa-person-rifle"><span> 15</span></i>
-                    </div>
-                </div>
-                <div class="box">
-                    <img src="../../img/pistol3.png" alt="">
-                    <div class="overlay">
-                        <h3>TETRANUTRA</h3>
-                        <i class="fa-solid fa-fire"><span> 300</span></i>
-                        <i class="fa-solid fa-person-rifle"><span> 15</span></i>
-                    </div>
-                </div>
-            </div>            
-        </div>
-
-        <div class="wrapper">
-            <h3 class="sub-subtitulo">AMETRALLADORA</h3>
-            <div class="box-area"> 
-                <div class="box">
-                    <img src="../../img/ametra1.png" alt="">
-                    <div class="overlay">
-                        <h3>GATLING</h3>
-                        <i class="fa-solid fa-fire"><span> 300</span></i>
-                        <i class="fa-solid fa-person-rifle"><span> 15</span></i>
-                    </div>
-                </div>
-                <div class="box">
-                    <img src="../../img/ametra2.png" alt="">
-                    <div class="overlay">
-                        <h3>LIBRA DE LIMON</h3>
-                        <i class="fa-solid fa-fire"><span> 300</span></i>
-                        <i class="fa-solid fa-person-rifle"><span> 15</span></i>
-                    </div>
-                </div>
-                <div class="box">
-                    <img src="../../img/ametra3.png" alt="">
-                    <div class="overlay">
-                        <h3>KILO 141</h3>
-                        <i class="fa-solid fa-fire"><span> 300</span></i>
-                        <i class="fa-solid fa-person-rifle"><span> 15</span></i>
-                    </div>
-                </div>
-            </div>            
-        </div>
-
-        <div class="wrapper">
-            <h3 class="sub-subtitulo">FRANCOTIRADOR</h3>
-            <div class="box-area"> 
-                <div class="box">
-                    <img src="../../img/franco1.png" alt="">
-                    <div class="overlay">
-                        <h3>PIU PIU</h3>
-                        <i class="fa-solid fa-fire"><span> 300</span></i>
-                        <i class="fa-solid fa-person-rifle"><span> 15</span></i>
-                    </div>
-                </div>
-                <div class="box">
-                    <img src="../../img/franco2.png" alt="">
-                    <div class="overlay">
-                        <h3>M12+1</h3>
-                        <i class="fa-solid fa-fire"><span> 300</span></i>
-                        <i class="fa-solid fa-person-rifle"><span> 15</span></i>
-                    </div>
-                </div>
-                <div class="box">
-                    <img src="../../img/franco3.png" alt="">
-                    <div class="overlay">
-                        <h3>VIC MAC</h3>
-                        <i class="fa-solid fa-fire"><span> 300</span></i>
-                        <i class="fa-solid fa-person-rifle"><span> 15</span></i>
-                    </div>
-                </div>
-            </div>            
-        </div>
-
+    <?php
+        
+        // Iterar a través de los resultados de la consulta y generar las cajas dinámicamente
+        $currentCategory = "";
+        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+            // Verificar si la categoría ha cambiado
+            if ($currentCategory != $row['tip_arm']) {
+                // Si es así, imprimir el encabezado de la categoría y comenzar un nuevo área de caja
+                if ($currentCategory != "") {
+                    // Cerrar la caja del área anterior
+                    echo '</div></div>';
+                }
+                // Actualizar la categoría actual
+                $currentCategory = $row['tip_arm'];
+                // Imprimir el encabezado de la categoría y comenzar un nuevo área de caja
+                echo '<div class="wrapper">';
+                echo '<h3 class="sub-subtitulo">' . $currentCategory . '</h3>';
+                echo '<div class="box-area">';
+            }
+            // Mostrar cada arma en una caja
+            echo '<div class="box">';
+            echo '<img src="' . $row['imagen_arma'] . '" alt="">';
+            echo '<div class="overlay">';
+            echo '<h3>' . $row['nombre_arma'] . '</h3>'; // Nombre del arma
+            echo '<i class="fa-solid fa-fire"><span>' . $row['dano'] . '</span></i>'; // Daño del arma
+            echo '<i class="fa-solid fa-person-rifle"><span>' . $row['can_balas'] . '</span></i>'; // Alcance del arma
+            echo '</div></div>';
+        }
+        // Cerrar la última caja del área
+        echo '</div></div>';
+        ?>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
