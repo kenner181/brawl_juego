@@ -44,7 +44,7 @@ $con = $db->getConnection();
                 <div class="card__data">
                     <h2 class="card__title">SHELLY</h2>
                     <span class="card__description">"Donde pone el ojo, pone la bala"</span>
-                    <a href="index.php" class="card__button">Seleccionar</a>
+                    <a href="index.php?id_personaje=1" class="card__button">Seleccionar</a>
                  </div>
             </div>
 
@@ -53,7 +53,7 @@ $con = $db->getConnection();
                 <div class="card__data">
                     <h2 class="card__title">PAM</h2>
                     <span class="card__description">"Siempre puede con todo"</span>
-                    <a href="index.php" class="card__button">Seleccionar</a>
+                    <a href="index.php?id_personaje=2" class="card__button">Seleccionar</a>
                  </div>
             </div>
 
@@ -62,8 +62,8 @@ $con = $db->getConnection();
                 <div class="card__data">
                     <h2 class="card__title">COLT</h2>
                     <span class="card__description">"Conquista a todos, excepto a shelly"</span>
-                    <a href="index.php" class="card__button">Seleccionar</a>
-                 </div>
+                    <a href="index.php?id_personaje=3" class="card__button">Seleccionar</a>
+                </div>
             </div>
 
             <div class="swiper-slide">
@@ -71,8 +71,8 @@ $con = $db->getConnection();
                 <div class="card__data">
                     <h2 class="card__title">EL PRIMO</h2>
                     <span class="card__description">"El rey del cuadrilatero"</span>
-                    <a href="index.php" class="card__button">Seleccionar</a>
-                 </div>
+                    <a href="index.php?id_personaje=4" class="card__button">Seleccionar</a>
+                </div>
             </div>
 
             <div class="swiper-slide">
@@ -80,8 +80,8 @@ $con = $db->getConnection();
                 <div class="card__data">
                     <h2 class="card__title">CROW</h2>
                     <span class="card__description">"No confia en nadie"</span>
-                    <a href="index.php" class="card__button">Seleccionar</a>
-                 </div>
+                    <a href="index.php?id_personaje=5" class="card__button">Seleccionar</a>
+                </div>
             </div>
 
             <div class="swiper-slide">
@@ -89,8 +89,8 @@ $con = $db->getConnection();
                 <div class="card__data">
                     <h2 class="card__title">BULL</h2>
                     <span class="card__description">"Es duro como el metal"</span>
-                    <a href="index.php" class="card__button">Seleccionar</a>
-                 </div>
+                    <a href="index.php?id_personaje=6" class="card__button">Seleccionar</a>
+                </div>
             </div>
         </div>
     </div>

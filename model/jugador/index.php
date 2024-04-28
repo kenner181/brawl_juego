@@ -64,6 +64,38 @@ $stmt_actualizado->bindParam(':id_usuario', $_SESSION['id_usuario']);
 $stmt_actualizado->execute();
 $user_actualizado = $stmt_actualizado->fetch(PDO::FETCH_ASSOC);
 
+if(isset($_GET['id_personaje']) && !empty($_GET['id_personaje'])) {
+    // Obtener el ID del personaje seleccionado
+    $id_personaje = $_GET['id_personaje'];
+    
+    // Consulta para obtener los datos del avatar correspondiente al personaje seleccionado
+    $query_avatar = "SELECT * FROM avatar WHERE id_avatar = :id_personaje";
+    $stmt_avatar = $con->prepare($query_avatar);
+    $stmt_avatar->bindParam(':id_personaje', $id_personaje);
+    $stmt_avatar->execute();
+    $avatar = $stmt_avatar->fetch(PDO::FETCH_ASSOC);
+
+    // Verificar si se encontró un avatar para el ID de personaje proporcionado
+    if($avatar) {
+        // Mostrar la imagen del avatar y del personaje
+        $foto_avatar = $avatar['foto']; // Suponiendo que el campo de la foto del avatar en la tabla 'avatar' se llama 'foto'
+        $foto_personaje = $avatar['personaje']; // Suponiendo que el campo de la imagen del personaje en la tabla 'avatar' se llama 'personaje'
+        
+        // Aquí puedes actualizar el valor de $user_actualizado['avatar'] y $user_actualizado['foto_personaje'] con los datos de las imágenes obtenidas
+        $user_actualizado['avatar'] = $foto_avatar;
+        $user_actualizado['foto_personaje'] = $foto_personaje;
+    
+    } else {
+        // Si no se encontró un avatar para el ID de personaje proporcionado, mostrar un mensaje de error o tomar otra acción adecuada
+        echo "Error: No se encontró avatar para el ID de personaje proporcionado";
+    }
+} else {
+    // Si no se proporcionó el parámetro id_personaje o está vacío, mostrar un mensaje de error o tomar otra acción adecuada
+    echo "Error: ID de personaje no proporcionado";
+}
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -104,7 +136,8 @@ $user_actualizado = $stmt_actualizado->fetch(PDO::FETCH_ASSOC);
         <section class="contenido">
             <div class="content-wrapper">
                 <div class="image-container">
-                    <img src="<?php echo $user_actualizado['foto_personaje']; ?>" alt="Descripción de la imagen" class="imagen-dinamica">
+                <img src="<?php echo $user_actualizado['foto_personaje']; ?>" alt="Descripción de la imagen" class="imagen-dinamica">
+
                     <div class="button-container">
                         <a href="mapas.php" class="btn btn-primary diagonal">UNIRSE A PARTIDA</a>
                     </div>
