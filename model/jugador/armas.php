@@ -1,22 +1,9 @@
 <?php
 session_start();
-if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
-    
-    header("Location: ../../iniciar_sesion.php");
-    exit; 
-}
 require_once("../../conexion/conexion.php");
 $db = new Database();
 $con = $db->getConnection();
-
-$sql = "SELECT * FROM armas
-INNER JOIN tip_arma ON armas.id_tip_arma = tip_arma.id_tip_arma
-INNER JOIN usuarios ON armas.id_rango = usuarios.id_rango
-GROUP BY armas.id_arma";
-$result = $con->query($sql);
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -31,7 +18,6 @@ $result = $con->query($sql);
     <title>Armas</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="../../css/armas.css">
-    
 </head>
 <body>
     
@@ -47,37 +33,94 @@ $result = $con->query($sql);
 
     
     <div id="card-area">
-    <?php
-        
-        // Iterar a través de los resultados de la consulta y generar las cajas dinámicamente
-        $currentCategory = "";
-        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-            // Verificar si la categoría ha cambiado
-            if ($currentCategory != $row['tip_arma']) {
-                // Si es así, imprimir el encabezado de la categoría y comenzar un nuevo área de caja
-                if ($currentCategory != "") {
-                    // Cerrar la caja del área anterior
-                    echo '</div></div>';
-                }
-                // Actualizar la categoría actual
-                $currentCategory = $row['tip_arma'];
-                // Imprimir el encabezado de la categoría y comenzar un nuevo área de caja
-                echo '<div class="wrapper">';
-                echo '<h3 class="sub-subtitulo">' . $currentCategory . '</h3>';
-                echo '<div class="box-area">';
-            }
-            // Mostrar cada arma en una caja
-            echo '<div class="box">';
-            echo '<img src="' . $row['imagen_arma'] . '" alt="">';
-            echo '<div class="overlay">';
-            echo '<h3>' . $row['nombre_arma'] . '</h3>'; // Nombre del arma
-            echo '<i class="fa-solid fa-fire"><span>' . $row['dano'] . '</span></i>'; // Daño del arma
-            echo '<i class="fa-solid fa-person-rifle"><span>' . $row['can_balas'] . '</span></i>'; // Alcance del arma
-            echo '</div></div>';
-        }
-        // Cerrar la última caja del área
-        echo '</div></div>';
-        ?>
+        <!-- Grupo de armas: PUÑOS -->
+        <div class="wrapper">
+            <h3 class="sub-subtitulo">PUÑOS</h3>
+            <div class="box-area"> 
+                <?php
+                // Consulta para obtener las armas de tipo PUÑOS
+                $query_punos = "SELECT * FROM armas WHERE id_tip_arma = 1";
+                $result_punos = $con->query($query_punos);
+                while ($row_punos = $result_punos->fetch(PDO::FETCH_ASSOC)) {
+                ?>
+                <div class="box">
+                    <img src="<?php echo $row_punos['imagen_arma']; ?>" alt="">
+                    <div class="overlay">
+                        <h3><?php echo $row_punos['nombre_arma']; ?></h3>
+                        <i class="fa-solid fa-fire"><span><?php echo $row_punos['dano']; ?></span></i>
+                        <i class="fa-solid fa-person-rifle"><span><?php echo $row_punos['municion']; ?></span></i>
+                    </div>
+                </div>
+                <?php } ?>
+            </div>            
+        </div>
+
+        <!-- Grupo de armas: PISTOLAS -->
+        <div class="wrapper">
+            <h3 class="sub-subtitulo">PISTOLAS</h3>
+            <div class="box-area"> 
+                <?php
+                // Consulta para obtener las armas de tipo PISTOLAS
+                $query_pistolas = "SELECT * FROM armas WHERE id_tip_arma = 2";
+                $result_pistolas = $con->query($query_pistolas);
+                while ($row_pistolas = $result_pistolas->fetch(PDO::FETCH_ASSOC)) {
+                ?>
+                <div class="box">
+                    <img src="<?php echo $row_pistolas['imagen_arma']; ?>" alt="">
+                    <div class="overlay">
+                        <h3><?php echo $row_pistolas['nombre_arma']; ?></h3>
+                        <i class="fa-solid fa-fire"><span><?php echo $row_pistolas['dano']; ?></span></i>
+                        <i class="fa-solid fa-person-rifle"><span><?php echo $row_pistolas['municion']; ?></span></i>
+                    </div>
+                </div>
+                <?php } ?>
+            </div>            
+        </div>
+
+        <!-- Grupo de armas: AMETRALLADORAS -->
+        <div class="wrapper">
+            <h3 class="sub-subtitulo">AMETRALLADORAS</h3>
+            <div class="box-area"> 
+                <?php
+                // Consulta para obtener las armas de tipo AMETRALLADORAS
+                $query_ametralladoras = "SELECT * FROM armas WHERE id_tip_arma = 3";
+                $result_ametralladoras = $con->query($query_ametralladoras);
+                while ($row_ametralladoras = $result_ametralladoras->fetch(PDO::FETCH_ASSOC)) {
+                ?>
+                <div class="box">
+                    <img src="<?php echo $row_ametralladoras['imagen_arma']; ?>" alt="">
+                    <div class="overlay">
+                        <h3><?php echo $row_ametralladoras['nombre_arma']; ?></h3>
+                        <i class="fa-solid fa-fire"><span><?php echo $row_ametralladoras['dano']; ?></span></i>
+                        <i class="fa-solid fa-person-rifle"><span><?php echo $row_ametralladoras['municion']; ?></span></i>
+                    </div>
+                </div>
+                <?php } ?>
+            </div>            
+        </div>
+
+        <!-- Grupo de armas: FRANCOTIRADORES -->
+        <div class="wrapper">
+            <h3 class="sub-subtitulo">FRANCOTIRADORES</h3>
+            <div class="box-area"> 
+                <?php
+                // Consulta para obtener las armas de tipo FRANCOTIRADORES
+                $query_francotiradores = "SELECT * FROM armas WHERE id_tip_arma = 4";
+                $result_francotiradores = $con->query($query_francotiradores);
+                while ($row_francotiradores = $result_francotiradores->fetch(PDO::FETCH_ASSOC)) {
+                ?>
+                <div class="box">
+                    <img src="<?php echo $row_francotiradores['imagen_arma']; ?>" alt="">
+                    <div class="overlay">
+                        <h3><?php echo $row_francotiradores['nombre_arma']; ?></h3>
+                        <i class="fa-solid fa-fire"><span><?php echo $row_francotiradores['dano']; ?></span></i>
+                        <i class="fa-solid fa-person-rifle"><span><?php echo $row_francotiradores['municion']; ?></span></i>
+                    </div>
+                </div>
+                <?php } ?>
+            </div>            
+        </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>

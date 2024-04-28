@@ -89,9 +89,24 @@ if ($stmt_mapas->rowCount() > 0) {
                     $stmt_verificar_registro->execute();
                     $registro_existente = $stmt_verificar_registro->fetchColumn();
 
+                    // Verificar el número de jugadores en el mundo actual
+                    $sql_num_jugadores = "SELECT COUNT(*) FROM detalle_mundo WHERE id_mundo = :id_mundo";
+                    $stmt_num_jugadores = $con->prepare($sql_num_jugadores);
+                    $stmt_num_jugadores->bindParam(':id_mundo', $id_mundo);
+                    $stmt_num_jugadores->execute();
+                    $num_jugadores = $stmt_num_jugadores->fetchColumn();
+
                     // Determinar el texto y la acción del botón según el estado del registro del usuario en este mundo
-                    $boton_texto = $registro_existente ? "Ingresar al Mapa" : "Unirse al Mapa";
-                    $accion_formulario = $registro_existente ? "sala.php" : "unirse_mundo.php";
+                    if ($registro_existente) {
+                        $boton_texto = "Ingresar al Mapa";
+                        $accion_formulario = "sala.php";
+                    } elseif ($num_jugadores >= 5) {
+                        $boton_texto = "Sala Llena";
+                        $accion_formulario = "#"; // No se permite enviar el formulario si la sala está llena
+                    } else {
+                        $boton_texto = "Unirse al Mapa";
+                        $accion_formulario = "unirse_mundo.php";
+                    }
 
                     // Mostrar el formulario con el botón correspondiente
                     echo '<form action="' . $accion_formulario . '" method="post">';
