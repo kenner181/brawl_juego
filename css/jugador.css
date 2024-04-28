@@ -47,7 +47,7 @@ header h1{
     border-radius: 10px;
     margin-left: 10px;
     margin-top: 15px;
-    height: 120px;
+    height: 120px;    
 }
 
 .perfil span{
@@ -64,6 +64,7 @@ header h1{
 .avatar p{
     margin-left: 20px;
     margin-top: -3px;
+    text-transform: uppercase;
 }
 
 .info {
@@ -79,7 +80,7 @@ header h1{
     text-align: center;
     align-items: center;
     border-radius: 10px;
-    margin-left: -8px;
+    margin-left: -12px;
     margin-top: 15px;
     width: 180px;
     height: 120px;
@@ -94,7 +95,7 @@ header h1{
 }
 
 .img_ran{
-    width: 70px;
+    width: 90px;
     height: 70px;
 }
 

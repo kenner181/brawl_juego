@@ -30,7 +30,7 @@ function determinarRango($puntaje) {
 }
 
 $query = "SELECT usuarios.username, avatar.foto AS avatar, usuarios.puntaje, usuarios.id_rango, rango.nombre AS nombre_rango, rango.foto AS foto_rango,
-          avatar.personaje AS foto_personaje
+          avatar.personaje AS foto_personaje, usuarios.id_nivel
           FROM usuarios
           INNER JOIN rango ON usuarios.id_rango = rango.id_rango
           INNER JOIN avatar ON usuarios.id_avatar = avatar.id_avatar
@@ -54,7 +54,7 @@ if ($nuevo_id_rango != $user['id_rango']) {
 
 // Obtener los datos actualizados del usuario
 $query_actualizado = "SELECT usuarios.username, usuarios.puntaje, avatar.foto AS avatar, rango.nombre AS nombre_rango, rango.foto AS foto_rango,
-                      avatar.personaje AS foto_personaje
+                      avatar.personaje AS foto_personaje, usuarios.id_nivel
                       FROM usuarios
                       INNER JOIN rango ON usuarios.id_rango = rango.id_rango
                       INNER JOIN avatar ON usuarios.id_avatar = avatar.id_avatar
@@ -87,8 +87,16 @@ $user_actualizado = $stmt_actualizado->fetch(PDO::FETCH_ASSOC);
                 <div class="avatar">
                     <img src="<?php echo $user_actualizado['avatar']; ?>" alt="Avatar" class="img_per">
                     <p><?php echo $user_actualizado['username']; ?></p>
-                    <p>Rango: <span><?php echo $user_actualizado['nombre_rango']; ?></span></p> 
-                    <p>puntaje: <span><?php echo $user_actualizado['puntaje']; ?></span></p> 
+                </div>
+                <div class="info"> 
+                        <p>Nivel: <span><?php echo $user_actualizado['id_nivel']; ?></span></p> 
+                        <p>puntaje: <span><?php echo $user_actualizado['puntaje']; ?></span></p>
+                </div> 
+            </div>
+            <div class="rango">
+                <h4><?php echo $user_actualizado['nombre_rango']; ?></h4>
+                <div class="liga">
+                    <img src="<?php echo $user_actualizado['foto_rango']; ?>" alt="Rango" class="img_ran">
                 </div>
             </div>
         </header>
@@ -106,8 +114,6 @@ $user_actualizado = $stmt_actualizado->fetch(PDO::FETCH_ASSOC);
 
         <aside>
         <div class="info" >
-                    
-                    <img src="<?php echo $user_actualizado['foto_rango']; ?>" alt="Rango" class="img_ran">
                 </div>
             <div class="menu">
                 

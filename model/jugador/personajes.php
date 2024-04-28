@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
+if (!isset($_SESSION['id_usuario']) || empty($_SESSION['id_usuario'])) {
     
     header("Location: ../../iniciar_sesion.php");
     exit; 

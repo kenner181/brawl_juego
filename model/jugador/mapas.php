@@ -7,7 +7,7 @@ if (!isset($_SESSION['id_usuario']) || empty($_SESSION['id_usuario'])) {
     echo '
         <script>
             alert("Por favor inicie sesión e intente nuevamente");
-            window.location = "../iniciar_sesion.php";
+            window.location = "../../iniciar_sesion.php";
         </script>
     ';
     exit;
